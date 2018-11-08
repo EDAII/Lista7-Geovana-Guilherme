@@ -2,18 +2,23 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import javax.swing.JLabel;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Point;
 
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame {
@@ -104,6 +109,10 @@ public class MainFrame extends JFrame {
 				//show data
 				tableObjects.setModel(getTableModelObjects(weights, values));
 				tableResult.setModel(getTableModelMatrix(results, weights, max_weight));
+				
+				//show itens taken
+				elControl.searchTaken(results, max_weight);
+				showItensTaken(tableResult);
 			}
 		});
 
@@ -183,7 +192,42 @@ public class MainFrame extends JFrame {
 		return new DefaultTableModel( matrix, COLUMN_NAME_VECTOR);
 	}
 	
+	private void showItensTaken(JTable table) {
+		ArrayList<Point> taken = elControl.getTaken();
+		ArrayList<Point> checked = elControl.getChecked();
+		
+		table.setDefaultRenderer(Object.class, new TableCellRenderer(){
+		    private DefaultTableCellRenderer DEFAULT_RENDERER =  new DefaultTableCellRenderer();
 
+		            @Override
+		            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		            	Component c = DEFAULT_RENDERER.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		            
 
+		            	if(isInList(taken, row, column)) {  
+		            	    c.setBackground(Color.GREEN);  
+		            	} else if (isInList(checked, row, column)) {
+		            		c.setBackground(Color.RED);
+		            	} else {
+		            		c.setBackground(Color.WHITE);
+		            	}
+		                return c;
+		            }
+
+		        });
+		
+	    
+	    
+	}
+	
+	private boolean isInList(ArrayList<Point> list, int row, int column) {
+		 for(Point point: list) {
+         	if (row == point.getX() && column == point.getY()) {
+         		return true;
+         	}
+         }
+		 return false;
+	}
 
 }
+

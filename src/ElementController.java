@@ -1,7 +1,11 @@
+import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Random;
 public class ElementController {
 	private int[] weights;
 	private int[] values;
+	private ArrayList<Point> taken;
+	private ArrayList<Point> checked;
 	
 	public ElementController() {
 		// TODO Auto-generated constructor stub
@@ -102,6 +106,41 @@ public class ElementController {
 		}
 		
 		return matrix;
+	}
+
+	public ArrayList<Point> getTaken() {
+		return taken;
+	}
+
+	public void setTaken(ArrayList<Point> taken) {
+		this.taken = taken;
+	}
+	
+	public void searchTaken(int[][] matrix, int max_weight) {
+		int current;
+		int j = max_weight + 1;
+		taken = new ArrayList<>();
+		checked = new ArrayList<>();
+		
+		for(int i=weights.length + 1; i>=2; i--) {
+			current = matrix[i][j];
+			
+			if(current != matrix[i-1][j]) {
+				taken.add(new Point(i, j));
+				j = j-weights[i-2];
+			}  else {
+				checked.add(new Point(i,j));
+			}
+			
+		}
+	}
+
+	public ArrayList<Point> getChecked() {
+		return checked;
+	}
+
+	public void setChecked(ArrayList<Point> checked) {
+		this.checked = checked;
 	}
 	
 	
